@@ -34,6 +34,8 @@ EXAMPLES = r'''
 RETURN = r'''# '''
 
 
+import sys
+sys.path.append("/etc/ansible/library/bitbucket")
 from ansible.module_utils.basic import AnsibleModule
 from bitbucket_client import bitbucketClient
 
