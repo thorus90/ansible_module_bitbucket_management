@@ -1,0 +1,2 @@
+# ansible_module_bitbucket_management
+With this ansible module you can manage permissions bitbucket permissions via the API. Right now it is only capable of managing the permission on a project basis, as this is all I needed so far.
