@@ -9,7 +9,9 @@ class bitbucketProject:
             self.project_found = True
             self.public_access = general[0]["public"]
 
-            self.description = general[0]["description"]
+            if "description" in general[0]:
+                self.description = general[0]["description"]
+
             self.public_permission = "no_access"
             if api.project_get_public_read(self.name) == True:
                 self.public_permission = "read"
@@ -20,7 +22,7 @@ class bitbucketProject:
             self.user_permissions = api.project_get_user_permissions(self.name)
 
     def del_group_permission(self, group):
-        return self.api.project_del_group_permissions(self.key,group)
+        return self.api.project_del_group_permissions(self.name,group)
 
     def del_all_group_permissions(self):
         for group_permission in self.group_permissions:
