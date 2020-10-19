@@ -41,6 +41,9 @@ class bitbucketClient:
     def projects_get(self, name):
         return(self.__request("projects", "get", {"name": name, "limit": "1000"})["values"])
 
+    def project_get(self, name):
+        return(self.__request("projects/{}".format(name), "get"))
+
     def project_set_details(self, key, details_json):
         if self.__request("projects/" + key, "put", details_json) == 200:
             return True

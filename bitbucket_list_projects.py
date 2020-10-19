@@ -35,7 +35,7 @@ RETURN = r'''# '''
 
 
 import sys
-sys.path.append("/etc/ansible/library/bitbucket")
+sys.path.append("/etc/ansible/library/bitbucket_management")
 from ansible.module_utils.basic import AnsibleModule
 from bitbucket_client import bitbucketClient
 

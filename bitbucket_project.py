@@ -2,15 +2,15 @@ class bitbucketProject:
     def __init__(self,api,name):
         self.name = name
         self.api = api
-        general = api.projects_get(self.name)
+        general = api.project_get(self.name)
         if len(general) == 0:
             self.project_found = False
         else:
             self.project_found = True
-            self.public_access = general[0]["public"]
+            self.public_access = general["public"]
 
-            if "description" in general[0]:
-                self.description = general[0]["description"]
+            if "description" in general:
+                self.description = general["description"]
 
             self.public_permission = "no_access"
             if api.project_get_public_read(self.name) == True:

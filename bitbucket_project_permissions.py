@@ -53,7 +53,7 @@ RETURN = r'''
 '''
 
 import sys
-sys.path.append("/etc/ansible/library/bitbucket")
+sys.path.append("/etc/ansible/library/bitbucket_management")
 from ansible.module_utils.basic import AnsibleModule
 from bitbucket_client import bitbucketClient
 from bitbucket_project import bitbucketProject
@@ -68,7 +68,7 @@ def run_module():
                     project=dict(type='str', required=True),
                     public_access=dict(type='bool', required=False, default=False),
                     public_permission=dict(type='str', required=False, default="no_access"),
-                    permissions=dict(type='list', required=False)
+                    permissions=dict(type='list', required=False, default=[])
             ),
             supports_check_mode=True,
     )
@@ -116,10 +116,11 @@ def run_module():
     tempGroupPermissions = []
     for permission in module.params["permissions"]:
       if permission["type"] == "User":
-        user = permission["for"].split(" ")
-        user = user[1] + ", " + user[0]
         for tempUserPermission in bitbucket_project.user_permissions:
-          if user == tempUserPermission["user"]["displayName"]:
+          user = tempUserPermission["user"]["displayName"].lower().split(" ")
+          user = user[1][0] + user[0][:-1].replace('ö','oe')
+          user = user.replace('skasch','sradtke')
+          if permission["for"] == user:
             if permission["right"] == tempUserPermission["permission"]:
               tempUserPermissions.append(tempUserPermission)
       elif permission["type"] == "Group":
@@ -145,9 +146,7 @@ def run_module():
       if not bitbucket_project.del_all_user_permissions():
           module.fail_json( msg='Error while deleting User Permissions!' )
       for userPermission in userPermissions:
-        userName = userPermission["for"].split(" ")
-        userName = userName[0][0] + userName[1]
-        if not bitbucket_project.add_user_permission(userName.lower(), userPermission["right"]):
+        if not bitbucket_project.add_user_permission(userPermission["for"], userPermission["right"]):
           module.fail_json( msg='Error while creating User Permissions!' )
       result["changed"] = True
       result["message"]["users_changed"] = True
