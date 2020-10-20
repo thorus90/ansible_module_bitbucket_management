@@ -37,7 +37,8 @@ EXAMPLES = r'''
     password: DO_NOT_LOG
     project: source_code_a
     permissions:
-      - for: "Surname Name"
+      - for: "Loginname in bitbucket"
+        displayName: "displayName in bitbucket"
         right: "PROJECT_ADMIN"
         type: "User"
       - for: "developer-group"
@@ -116,11 +117,10 @@ def run_module():
     tempGroupPermissions = []
     for permission in module.params["permissions"]:
       if permission["type"] == "User":
+        if permission["displayName"] == "":
+          module.fail_json( msg="displayName is not set!")
         for tempUserPermission in bitbucket_project.user_permissions:
-          user = tempUserPermission["user"]["displayName"].lower().split(" ")
-          user = user[1][0] + user[0][:-1].replace('ö','oe')
-          user = user.replace('skasch','sradtke')
-          if permission["for"] == user:
+          if permission["displayName"] == tempUserPermission["user"]["displayName"]:
             if permission["right"] == tempUserPermission["permission"]:
               tempUserPermissions.append(tempUserPermission)
       elif permission["type"] == "Group":
